@@ -1,8 +1,6 @@
 module QSTKStudy.EventProfiler
-    ( countEvents,
-      events,
-      returns,
-      dateSpan
+    ( events,
+      --returns
     ) where
 
 import qualified Data.Vector as V
@@ -11,26 +9,31 @@ import qualified Lib.DataParser as DP
 import qualified QSTKUtil.QSDateUtil as DU
 import Data.Time.Calendar
 import Data.Time
+import qualified Data.Map as Map
+import Data.Maybe
+import Data.List
 
-pairs xs = zip xs (tail xs)
+pairs xs = ("nan", "nan") : zip xs (tail xs)
 
-events :: [String] -> V.Vector Integer
-events xs = V.fromList (0 : (map event $ pairs xs))
+events :: Map.Map String [String] -> Map.Map String [Integer]
+events xs = Map.map (map event) $ Map.map pairs xs
 
+--returns :: Map.Map String [Integer] -> Map.Map String [String] -> Int -> Int -> Map.Map String [String]
+--returns es ps lb lf = Map.map (getPrices ps lb lf (elemIndices 1)) es
+
+--getPrices ps lb lf is = map (priceSlice ps lb lf) is
+
+--priceSlice ps lb lf i = DP.slice (i - lb) (i + lf) (Map.lookup "AAPL")
+
+--eventOcc :: String -> Map.Map String [String] -> Int -> Int -> Integer -> [Integer] -> [Double]
+--eventOcc t ps lb lf i es =  if (es !! (lb + i) == 1)
+--                            then DP.slice (lb - i) (lf + i) (fromMaybe 0.0 (Map.lookup t ps)) ++ returns es ps lb lf (i+1)
+--                            else [0.0] ++ returns es ps lb lf (i+1)
 --returns (matrixIndex, lookForward, lookBack, events)
-returns :: String -> String -> [Day] -> Integer -> Integer -> Int -> [String] -> V.Vector Integer -> IO [String]
-returns sd ed ds lb lf i syms em =  if (em V.! i == 0)
-                                    then (DP.readFrom (fst (dateSpan ds i lb lf)) (snd (dateSpan ds i lb lf))) "AAPL"
-                                    else return []
-
--- dateSpan (matrixIndex, lookForward, lookBack)
-dateSpan :: [Day] -> Int -> Integer -> Integer -> (Day, Day)
-dateSpan ds i lb lf = (addDays (- (lb)) $ ds !! i, addDays (lf) $ ds !! i)
-
-countEvents :: [String] -> Integer
-countEvents [] = 0
-countEvents (x:[]) = 0
-countEvents all@(x:xs) = sum (map event $ pairs all)
+--returns :: String -> String -> [Day] -> Integer -> Integer -> Int -> [String] -> V.Vector Integer -> IO [String]
+--returns sd ed ds lb lf i syms em =  if (em V.! i == 1)
+--                                    then (DP.readFrom (fst (dateSpan ds i lb lf)) (snd (dateSpan ds i lb lf)) "AAPL" )
+--                                    else return []
 
 event :: (String, String) -> Integer
 event (x, "nan") = 0
