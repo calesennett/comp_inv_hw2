@@ -1,6 +1,8 @@
 module QSTKStudy.EventProfiler
     ( events,
-      --returns
+      occurrences,
+      genSliceMap,
+      genReturns
     ) where
 
 import qualified Data.Vector as V
@@ -15,25 +17,34 @@ import Data.List
 
 pairs xs = ("nan", "nan") : zip xs (tail xs)
 
-events :: Map.Map String [String] -> Map.Map String [Integer]
-events xs = Map.map (map event) $ Map.map pairs xs
+events :: Int -> Int -> Map.Map String [String] -> Map.Map String [Integer]
+events lb lf prices = Map.map (map event) $ Map.map pairs prices -- (map DP.slice (lb ((length head prices) - lf)) prices)
 
---returns :: Map.Map String [Integer] -> Map.Map String [String] -> Int -> Int -> Map.Map String [String]
---returns es ps lb lf = Map.map (getPrices ps lb lf (elemIndices 1)) es
+occurrences :: Map.Map String [Integer] -> Map.Map String [String] -> Int -> Int -> Map.Map String [Int]
+occurrences es ps lb lf = Map.map (elemIndices 1) es
 
---getPrices ps lb lf is = map (priceSlice ps lb lf) is
+genSliceMap :: Map.Map String [Double] -> Map.Map String [Int] -> Int -> Int -> Map.Map String [[Int]]
+genSliceMap returns event_occ lb lf = Map.map (map (genIndices returns lb lf)) event_occ
 
---priceSlice ps lb lf i = DP.slice (i - lb) (i + lf) (Map.lookup "AAPL")
+genReturns :: Map.Map String [[Int]] -> Map.Map String [Double] -> Map.Map String [[Double]]
+genReturns slices returns = Map.mapWithKey (get returns) slices
 
---eventOcc :: String -> Map.Map String [String] -> Int -> Int -> Integer -> [Integer] -> [Double]
---eventOcc t ps lb lf i es =  if (es !! (lb + i) == 1)
---                            then DP.slice (lb - i) (lf + i) (fromMaybe 0.0 (Map.lookup t ps)) ++ returns es ps lb lf (i+1)
---                            else [0.0] ++ returns es ps lb lf (i+1)
---returns (matrixIndex, lookForward, lookBack, events)
---returns :: String -> String -> [Day] -> Integer -> Integer -> Int -> [String] -> V.Vector Integer -> IO [String]
---returns sd ed ds lb lf i syms em =  if (em V.! i == 1)
---                                    then (DP.readFrom (fst (dateSpan ds i lb lf)) (snd (dateSpan ds i lb lf)) "AAPL" )
---                                    else return []
+get :: Map.Map String [Double] -> String -> [[Int]] -> [[Double]]
+get returns sym indices = map (returnSlice returns sym) indices
+
+returnSlice :: Map.Map String [Double] -> String -> [Int] -> [Double]
+returnSlice returns sym indices = map (returnAt sym returns) indices
+
+returnAt :: String -> Map.Map String [Double] -> Int -> Double
+returnAt sym returns index = (fromMaybe [0.0] (Map.lookup sym returns)) !! index
+
+genIndices :: Map.Map String [Double] -> Int -> Int -> Int -> [Int]
+genIndices returns lb lf start = [x | x <- [(start - lb)..(start + lf)], x >= 0, x < max_index]
+                                 where max_index = (length $ snd $ head (Map.toList returns))
+--genIndices :: Int -> Int -> Int -> [Int]
+--genIndices lb lf start = [beg..end]
+--                         where beg = start - lb
+--                               end = start + lf
 
 event :: (String, String) -> Integer
 event (x, "nan") = 0

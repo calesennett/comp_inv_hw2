@@ -1,0 +1,42 @@
+	Sat Nov  1 21:21 2014 Time and Allocation Profiling Report  (Final)
+
+	   HW2 +RTS -p -RTS
+
+	total time  =        3.47 secs   (3468 ticks @ 1000 us, 1 processor)
+	total alloc = 9,453,138,072 bytes  (excludes profiling overheads)
+
+COST CENTRE MODULE                  %time %alloc
+
+readFrom    Lib.DataParser           90.3   97.0
+events      QSTKStudy.EventProfiler   9.5    2.9
+
+
+                                                                   individual     inherited
+COST CENTRE   MODULE                             no.     entries  %time %alloc   %time %alloc
+
+MAIN          MAIN                                65           0    0.0    0.0   100.0  100.0
+ main         Main                               131           0    0.2    0.0   100.0  100.0
+  average     QSTKUtil.Math.Statistics           143           0    0.0    0.0     0.0    0.0
+   mean       QSTKUtil.Math.Statistics           144          21    0.0    0.0     0.0    0.0
+  daily       QSTKUtil.QSTsUtil                  141         373    0.0    0.0     0.0    0.0
+  genReturns  QSTKStudy.EventProfiler            137           1    0.0    0.0     0.0    0.0
+  genSliceMap QSTKStudy.EventProfiler            136           1    0.0    0.0     0.0    0.0
+  occurrences QSTKStudy.EventProfiler            135           1    0.1    0.0     0.1    0.0
+  events      QSTKStudy.EventProfiler            134           1    9.5    2.9     9.5    2.9
+  readFrom    Lib.DataParser                     132         492   90.3   97.0    90.3   97.0
+   slice      Lib.DataParser                     140         492    0.0    0.0     0.0    0.0
+ CAF          QSTKStudy.EventProfiler            127           0    0.0    0.0     0.0    0.0
+  occurrences QSTKStudy.EventProfiler            138           0    0.0    0.0     0.0    0.0
+ CAF          Lib.DataParser                     126           0    0.0    0.0     0.0    0.0
+  readFrom    Lib.DataParser                     133           0    0.0    0.0     0.0    0.0
+ CAF          Main                               123           0    0.0    0.0     0.0    0.0
+  main        Main                               130           1    0.0    0.0     0.0    0.0
+   average    QSTKUtil.Math.Statistics           142           1    0.0    0.0     0.0    0.0
+ CAF          GHC.Conc.Signal                    112           0    0.0    0.0     0.0    0.0
+ CAF          GHC.Float                          107           0    0.0    0.0     0.0    0.0
+ CAF          GHC.IO.Encoding                    104           0    0.0    0.0     0.0    0.0
+ CAF          GHC.IO.Encoding.Iconv              102           0    0.0    0.0     0.0    0.0
+ CAF          GHC.IO.FD                           97           0    0.0    0.0     0.0    0.0
+ CAF          GHC.IO.Handle.FD                    95           0    0.0    0.0     0.0    0.0
+ CAF          Text.Read.Lex                       83           0    0.0    0.0     0.0    0.0
+ CAF          GHC.Integer.Logarithms.Internals    73           0    0.0    0.0     0.0    0.0
